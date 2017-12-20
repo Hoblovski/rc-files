@@ -85,3 +85,5 @@ export editor='vim'
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias l='ls'
+alias gcc="gcc -std=c99"
+alias g++="g++ -std=c++11"
