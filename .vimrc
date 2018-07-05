@@ -7,14 +7,40 @@ syntax enable
 set background=dark
 colorscheme solarized
 
+iab HH \mathbf{H}
+iab QQ \mathbf{Q}
+iab RR \mathbf{R}
+iab AA \mathbf{A}
+iab BB \mathbf{B}
+iab CC \mathbf{C}
+iab UU \mathbf{U}
+iab II \mathbf{I}
+iab cc \mathbf{c}
+iab MM \mathbf{M}
+iab NN \mathbf{N}
+iab ff \mathbf{f}
+iab PP \mathbf{P}
+iab LL \mathbf{L}
+iab ee \mathbf{e}
+iab DD \mathbf{D}
+iab 11 \mathbf{1}
+iab 00 \mathbf{0}
+iab xx \mathbf{x}
+iab yy \mathbf{y}
+iab zz \mathbf{z}
+iab ww \mathbf{w}
+iab uu \mathbf{u}
+iab vv \mathbf{v}
+iab aa \mathbf{a}
+iab bb \mathbf{b}
+
+
 " ****************************************************************************
 """ set's
 
-""" INDENTATION : CHANGE WITH PROJECT!!!
-set noexpandtab
-set tabstop=2
-set softtabstop=2
-set shiftwidth=2
+set tabstop=8
+set softtabstop=8
+set shiftwidth=8
 
 set nobackup
 set nowritebackup
@@ -108,12 +134,12 @@ autocmd BufNewFile *.{cpp} call <SID>insert_gates_src()
 
 
 """ complete HTML tags
-function s:CompleteTags()
-  inoremap <buffer> ><Tab> ></<C-x><C-o><Esc>:startinsert!<CR><C-O>?</<CR>
-" inoremap <buffer> ><Leader> >
-  inoremap <buffer> ><CR> ></<C-x><C-o><Esc>:startinsert!<CR><C-O>?</<CR><CR><Tab><CR><Up><C-O>$
-endfunction
-autocmd BufRead,BufNewFile *.html,*.js,*.xml call s:CompleteTags()
+" function s:CompleteTags()
+"   inoremap <buffer> ><Tab> ></<C-x><C-o><Esc>:startinsert!<CR><C-O>?</<CR>
+" " inoremap <buffer> ><Leader> >
+"   inoremap <buffer> ><CR> ></<C-x><C-o><Esc>:startinsert!<CR><C-O>?</<CR><CR><Tab><CR><Up><C-O>$
+" endfunction
+" autocmd BufRead,BufNewFile *.html,*.js,*.xml call s:CompleteTags()
 
 
 
@@ -135,11 +161,11 @@ function Inc(...)
 endfunction
 
 " PyMatcher for CtrlP
-if !has('python3')
-    echo 'In order to use pymatcher plugin, you need +python compiled vim'
-else
-    let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-endif
+" if !has('python3')
+"     echo 'In order to use pymatcher plugin, you need +python compiled vim'
+" else
+"     let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+" endif
 
 " easy align
 nmap <C-s> <Plug>(EasyAlign)
@@ -156,8 +182,8 @@ call vundle#begin()
  
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'FelikZ/ctrlp-py-matcher'
+" Plugin 'ctrlpvim/ctrlp.vim'
+" Plugin 'FelikZ/ctrlp-py-matcher'
 Plugin 'junegunn/vim-easy-align'
 Plugin 'vim-scripts/DrawIt'
 Plugin 'altercation/vim-colors-solarized'

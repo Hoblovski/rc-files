@@ -1,0 +1,4 @@
+#!/bin/sh
+cp ./.tmux.conf $HOME/
+cp ./.vimrc $HOME/
+cp ./.zshrc $HOME/
