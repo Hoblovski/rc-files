@@ -13,8 +13,8 @@ export ZSH="/home/hob/.oh-my-zsh"
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="clean"
-
+# ZSH_THEME="clean"
+ZSH_THEME="michelebologna"
 # Set list of themes to load
 # Setting this variable when ZSH_THEME=random
 # cause zsh load theme from this variable instead of
@@ -102,3 +102,67 @@ source /etc/zsh_command_not_found
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias g++="g++ -std=c++11"
+alias gcc="gcc -ansi -Wpedantic -std=c99"
+
+# Personal settings
+stty -ixon
+export GOPATH=$HOME/go
+
+export PATH=$PATH:$HOME/Downloads/riscv64-unknown-elf-gcc-2018.07.0-x86_64-linux-ubuntu14/bin:$HOME/Programs/utility/Typora-linux-x64/:/home/hob/Programs/riscv/bin:/home/hob/Programs/utility/z3-4.8.4.d6df51951f4c-x64-ubuntu-16.04/bin:/home/hob/Programs/utility/dafny
+export PYTHONPATH=$PYTHONPATH:/home/hob/Programs/utility/z3-4.8.4.d6df51951f4c-x64-ubuntu-16.04/bin/python/
+export CLASSPATH=".:/usr/local/lib/antlr-4.7.1-complete.jar:$CLASSPATH"
+export LD_LIBRARY_PATH=/home/hob/Programs/utility/z3-4.8.4.d6df51951f4c-x64-ubuntu-16.04/bin
+
+alias antlr4='java -jar /usr/local/lib/antlr-4.7.1-complete.jar'
+alias grun='java org.antlr.v4.gui.TestRig'
+alias open="xdg-open"
+alias pk="pkill"
+alias grst="git checkout -- . && git clean -fdx && git submodule update --recursive"
+alias hgf="history | rg "
+hg() {
+  history | rg "^\s*\d*\s*$1\b"
+}
+cd() {
+	builtin cd "$@" && ls -F
+}
+fd() {
+  local FN=`printf "%s*" $*`
+  find . -iname "*$FN"
+}
+fdf() {
+  local FN=`printf "%s*" $*`
+  find . -iname "*$FN" -type f
+}
+fdh() {
+  local FN=`printf "%s*" $*`
+  find . -iname "*$FN*" -type f -print -quit
+}
+rsed() {
+  find . -type f -exec sed -i $1 {} +
+}
+byterange() {
+  dd skip=$2 ibs=1 count=$3 if=$1 of=$4
+}
+
+# opam configuration
+test -r /home/hob/.opam/opam-init/init.zsh && . /home/hob/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+
+polipoexports() {
+  if [[ -z `service polipo status | grep active` ]]
+  then
+    echo "Polipo not enabled!"
+    return
+  fi
+  export http_proxy="http://localhost:8123"
+  export https_proxy="http://localhost:8123"
+}
+#export TERM=screen-256color
+export OPAMROOT=~/opam-coq.8.9.0 # installation directory
+
+bindkey '^[a' backward-word
+bindkey '^[d' forward-word
+
+source ~/.ghcup/env
+
+

@@ -1,0 +1,9 @@
+{
+	"server":        "138.197.205.7",
+	"server_port":   443,
+	"local_port":    48741,
+	"local_address": "127.0.0.1",
+	"password":      "sspswd",
+	"method":        "aes-256-cfb",
+	"timeout":       60
+}
