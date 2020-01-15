@@ -73,23 +73,24 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 source /etc/zsh_command_not_found
+source /usr/share/autojump/autojump.sh
 
 # User configuration
+stty -ixon
+unsetopt AUTO_CD
 
 # export MANPATH="/usr/local/man:$MANPATH"
+export EDITOR='vim'
+export LANG=en_US.UTF-8
+HIST_STAMPS="mm/dd/yyyy"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+ZLE_RPROMPT_INDENT=0
 
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
+export PATH=$PATH
 
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
+export LIBRARY_PATH=$LIBRARY_PATH
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/rsa_id"
@@ -114,12 +115,12 @@ export PYTHONPATH=$PYTHONPATH:/home/hob/Programs/utility/z3-4.8.4.d6df51951f4c-x
 export CLASSPATH=".:/usr/local/lib/antlr-4.7.1-complete.jar:$CLASSPATH"
 export LD_LIBRARY_PATH=/home/hob/Programs/utility/z3-4.8.4.d6df51951f4c-x64-ubuntu-16.04/bin
 
-alias antlr4='java -jar /usr/local/lib/antlr-4.7.1-complete.jar'
-alias grun='java org.antlr.v4.gui.TestRig'
+alias nogit="tmux setenv NOGIT 1"
+alias yesgit="tmux setenv -u NOGIT"
+#alias antlr4='java -jar /usr/local/lib/antlr-4.7.1-complete.jar'
+#alias grun='java org.antlr.v4.gui.TestRig'
 alias open="xdg-open"
-alias pk="pkill"
 alias grst="git checkout -- . && git clean -fdx && git submodule update --recursive"
-alias hgf="history | rg "
 hg() {
   history | rg "^\s*\d*\s*$1\b"
 }
@@ -130,39 +131,15 @@ fd() {
   local FN=`printf "%s*" $*`
   find . -iname "*$FN"
 }
-fdf() {
-  local FN=`printf "%s*" $*`
-  find . -iname "*$FN" -type f
-}
-fdh() {
-  local FN=`printf "%s*" $*`
-  find . -iname "*$FN*" -type f -print -quit
-}
 rsed() {
   find . -type f -exec sed -i $1 {} +
 }
-byterange() {
-  dd skip=$2 ibs=1 count=$3 if=$1 of=$4
-}
-
-# opam configuration
-test -r /home/hob/.opam/opam-init/init.zsh && . /home/hob/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
-
-polipoexports() {
-  if [[ -z `service polipo status | grep active` ]]
-  then
-    echo "Polipo not enabled!"
-    return
-  fi
-  export http_proxy="http://localhost:8123"
-  export https_proxy="http://localhost:8123"
-}
-#export TERM=screen-256color
-export OPAMROOT=~/opam-coq.8.9.0 # installation directory
 
 bindkey '^[a' backward-word
 bindkey '^[d' forward-word
 
-source ~/.ghcup/env
 
 
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export DISABLE_UNTRACKED_FILES_DIRTY="true"
+export TERM=screen

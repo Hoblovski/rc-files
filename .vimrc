@@ -1,25 +1,19 @@
-""" Vundle
-filetype off
-set runtimepath+=~/.vim/bundle/Vundle.vim
-set runtimepath+=~/.fzf
-call vundle#begin()
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'junegunn/vim-easy-align'
-Plugin 'vim-scripts/DrawIt'
-Plugin 'jremmen/vim-ripgrep'
-Plugin 'junegunn/fzf.vim'
-Plugin 'let-def/vimbufsync'
-" Plugin 'the-lambda-church/coquille'
-Plugin 'whonore/Coqtail'
+""" vim-plug
+call plug#begin('~/.vim/bundle')
+Plug 'junegunn/vim-easy-align'
+Plug 'vim-scripts/DrawIt'
+Plug 'let-def/vimbufsync'
+Plug 'whonore/Coqtail'
+Plug 'majutsushi/tagbar'
+Plug 'junegunn/fzf.vim'
 " highlights
-Plugin 'pest-parser/pest.vim'
-Plugin 'mlr-msft/vim-loves-dafny'
-Plugin 'derekwyatt/vim-scala'
-Plugin 'plasticboy/vim-markdown'
-Plugin 'jrozner/vim-antlr'
-Plugin 'rust-lang/rust.vim'
-call vundle#end()            " required
-filetype plugin indent on    " required
+Plug 'pest-parser/pest.vim'
+Plug 'mlr-msft/vim-loves-dafny'
+Plug 'derekwyatt/vim-scala'
+Plug 'plasticboy/vim-markdown'
+Plug 'jrozner/vim-antlr'
+Plug 'rust-lang/rust.vim'
+call plug#end()
 
 set nocompatible
 behave xterm
@@ -87,6 +81,11 @@ nmap <C-v> "+p
 nnoremap <C-Q> <C-V>
 nmap . @q
 
+
+""" highlights ================================
+highlight MyBreak cterm=bold term=bold ctermfg=white ctermbg=2
+match MyBreak /.*\(=\{4}=\+\|-\{4}-\+\)/
+
 """ Simple Tab Auto Completion
 function CursorBeforeClosingParenthesis()
     return (getline(".")[col(".")-1]==")")
@@ -96,7 +95,6 @@ inoremap <Tab> <C-R>=getline('.')[col('.')-2]=~?'\k'?
     \"\<lt>C-n>":
     \"\<lt>Tab>"
     \<CR>
-" ino <CR> <C-R>=CursorBeforeClosingParenthesis()?"\<lt>Right>":"\<lt>CR>"<CR>
 
 
 """ simple commenting/uncommenting
@@ -178,10 +176,6 @@ endfunction
 " iab bb \mathbf{b}
 
 
-au BufRead,BufNewFile *.k set filetype=kframework
-au! Syntax kframework source kframework.vim
-syn on
-
 " easy align
 nmap <C-s> <Plug>(EasyAlign)
 xmap <C-s> <Plug>(EasyAlign)
@@ -193,6 +187,8 @@ let g:tex_conceal = ""
 let g:vim_markdown_math = 1
 let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
+let g:vim_markdown_toc_autofit = 1
+:autocmd BufReadPost *.md :Toc
 
 " rg
 command R Rg
@@ -218,6 +214,8 @@ let g:fzf_action = {
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 let g:fzf_buffers_jump = 1
+" If installed using git
+set rtp+=~/.fzf
 
 " vim coq
 "autocmd BufNewFile *.v call SetupCoqIMap()
@@ -225,3 +223,85 @@ let g:fzf_buffers_jump = 1
 "function! SetupCoqIMap()
 "  execute 'inoremap . .<C-o><Enter><CR>'
 "endfunc
+
+""" Tagbar ================================
+nmap <F1> :TagbarToggle<CR>
+let g:tagbar_left = 1
+
+""" Tagline ================================
+set tabline=%!MyTabLine()
+
+function MyTabLine()
+  let s = '' " complete tabline goes here
+  " loop through each tab page
+  for t in range(tabpagenr('$'))
+    " set highlight
+    let s .= '%#TabSep#'
+    let s .= '  '
+
+    if t + 1 == tabpagenr()
+      let s .= '%#TabLineSel#'
+    else
+      let s .= '%#TabLine#'
+    endif
+
+    " set page number string
+    let s .= t + 1 . ': '
+    " get buffer names and statuses
+    let n = ''      "temp string for buffer names while we loop and check buftype
+    let m = 0       " &modified counter
+    let bc = len(tabpagebuflist(t + 1))     "counter to avoid last ' '
+    " loop through each buffer in a tab
+    for b in tabpagebuflist(t + 1)
+      " buffer types: quickfix gets a [Q], help gets [H]{base fname}
+      " others get 1dir/2dir/3dir/fname shortened to 1/2/3/fname
+      if getbufvar( b, "&buftype" ) == 'help'
+        let n .= '[H]' . fnamemodify( bufname(b), ':t:s/.txt$//' )
+      elseif getbufvar( b, "&buftype" ) == 'quickfix'
+        let n .= '[Q]'
+      else
+        let n .= pathshorten(bufname(b))
+      endif
+      " check and ++ tab's &modified count
+      if getbufvar( b, "&modified" )
+        let m += 1
+      endif
+      " no final ' ' added...formatting looks better done later
+      if bc > 1
+        let n .= ' '
+      endif
+      let bc -= 1
+    endfor
+    " add modified label [n+] where n pages in tab are modified
+    if m > 0
+      let s .= '[' . m . '+]'
+    endif
+    " select the highlighting for the buffer names
+    " my default highlighting only underlines the active tab
+    " buffer names.
+    if t + 1 == tabpagenr()
+      let s .= '%#TabLineSel#'
+    else
+      let s .= '%#TabLine#'
+    endif
+    " add buffer names
+    if n == ''
+      let s.= '[New]'
+    else
+      let s .= n
+    endif
+    " switch to no underlining and add final space to buffer list
+    let s .= ' '
+  endfor
+  " after the last tab fill with TabLineFill and reset tab page nr
+  let s .= '%#TabLineFill#%T'
+  " right-align the label to close the current tab page
+  if tabpagenr('$') > 1
+    let s .= '%=%#TabLineFill#%999Xclose'
+  endif
+  return s
+endfunction
+hi TabLine ctermfg=Black ctermbg=Green
+hi TabLineSel ctermfg=Black ctermbg=Red
+hi TabLineFill ctermfg=DarkGreen ctermbg=DarkGreen
+hi TabSep ctermfg=Gray ctermbg=Gray
