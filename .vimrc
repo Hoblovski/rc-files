@@ -1,19 +1,25 @@
 """ vim-plug
-call plug#begin('~/.vim/bundle')
-Plug 'junegunn/vim-easy-align'
-Plug 'vim-scripts/DrawIt'
-Plug 'let-def/vimbufsync'
-Plug 'whonore/Coqtail'
-Plug 'majutsushi/tagbar'
-Plug 'junegunn/fzf.vim'
-" highlights
-Plug 'pest-parser/pest.vim'
-Plug 'mlr-msft/vim-loves-dafny'
-Plug 'derekwyatt/vim-scala'
-Plug 'plasticboy/vim-markdown'
-Plug 'jrozner/vim-antlr'
-Plug 'rust-lang/rust.vim'
-call plug#end()
+"plug: call plug#begin('~/.vim/bundle')
+"plug: Plug 'junegunn/vim-easy-align'
+"plug: Plug 'vim-scripts/DrawIt'
+"plug: Plug 'whonore/Coqtail' | Plug 'let-def/vimbufsync'
+"plug: Plug 'majutsushi/tagbar'
+"plug: Plug 'vim-scripts/CmdlineComplete'
+"plug: Plug 'easymotion/vim-easymotion'
+"plug: set rtp+=~/.fzf " fzf
+"plug: " highlights
+"plug: Plug 'pest-parser/pest.vim'
+"plug: Plug 'mlr-msft/vim-loves-dafny'
+"plug: Plug 'derekwyatt/vim-scala'
+"plug: Plug 'plasticboy/vim-markdown'
+"plug: Plug 'jrozner/vim-antlr'
+"plug: Plug 'rust-lang/rust.vim'
+"plug: "#Plug '~/.vim/bundle/vim-why3'
+"plug: Plug '~/.vim/bundle/grammarspec'
+"plug: Plug 'leafgarland/typescript-vim'
+"plug: call plug#end()
+
+filetype plugin indent on
 
 set nocompatible
 behave xterm
@@ -25,9 +31,9 @@ set background=dark
 
 """ set's ****************************************
 set expandtab
-set tabstop=2
-set softtabstop=2
-set shiftwidth=2
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
 
 set nobackup
 set nowritebackup
@@ -63,12 +69,10 @@ map <F2> :w<CR>
 imap <F2> <C-O>:w<CR>
 map <F3> :nohlsearch<CR>
 map <F5> :e<CR>
-map <Up> gT
-map <Down> gt
-map <Left> <C-W>h
-map <Right> <C-W>l
-noremap <C-H> :s///g<Left><Left><Left>
-noremap <C-J> :%s///g<Left><Left><Left>
+nnoremap <Tab> gt
+nnoremap <S-Tab> gT
+noremap <C-H> :su///g<Left><Left><Left>
+noremap <C-J> :%su///g<Left><Left><Left>
 noremap K yiw:%s/\<<C-R>"\>//g<Left><Left>
 noremap Y y$
 imap {<CR> {<CR>}<C-O>O
@@ -81,10 +85,15 @@ nmap <C-v> "+p
 nnoremap <C-Q> <C-V>
 nmap . @q
 
+""" abbreviations ================================
 
 """ highlights ================================
 highlight MyBreak cterm=bold term=bold ctermfg=white ctermbg=2
-match MyBreak /.*\(=\{4}=\+\|-\{4}-\+\)/
+match MyBreak /\(=\{20}=\+\|-\{20}-\+\)/
+
+hi StatusLine	gui=bold	guifg=red	guibg=blue	ctermfg=magenta   ctermbg=blue
+
+""" Other ================================
 
 """ Simple Tab Auto Completion
 function CursorBeforeClosingParenthesis()
@@ -95,21 +104,6 @@ inoremap <Tab> <C-R>=getline('.')[col('.')-2]=~?'\k'?
     \"\<lt>C-n>":
     \"\<lt>Tab>"
     \<CR>
-
-
-""" simple commenting/uncommenting
-func s:SimpleCommenterSetup(ft)
-  let g:SimpleCommenterDelimiters = { 'c': '//', 'java': '//', 'scala': '//', 'sh': '#', 'bash': '#', 'python': '#', 'vim': '"'}
-  if has_key(g:SimpleCommenterDelimiters, a:ft)
-    let g:SimpleCommenterDelimiter = g:SimpleCommenterDelimiters[a:ft]
-  else
-    let g:SimpleCommenterDelimiter = ""
-  endif
-  execute 'xmap / :s@^@' . g:SimpleCommenterDelimiter . '@<CR>:nohls<CR>'
-  execute 'xmap ? :s@^' . g:SimpleCommenterDelimiter . '@@<CR>:nohls<CR>'
-endfunc
-autocmd Filetype * :call s:SimpleCommenterSetup(&filetype)
-
 
 """ insert C header gates
 function! s:insert_gates()
@@ -129,7 +123,6 @@ endfunction
 autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
 autocmd BufNewFile *.{cpp} call <SID>insert_gates_src()
 
-
 """ Incremental Search and Replace
 function Init(val)
     let g:SBegin = a:val
@@ -146,87 +139,65 @@ function Inc(...)
     endif
 endfunction
 
+function! s:SetTabs(a)
+  let &tabstop=str2nr(a:a)
+  let &softtabstop=str2nr(a:a)
+  let &shiftwidth=str2nr(a:a)
+endfunction
+command! -nargs=1 TT call s:SetTabs(<args>)
 
-" fucking tex bold matrices/vectors
-" iab HH \mathbf{H}
-" iab QQ \mathbf{Q}
-" iab RR \mathbf{R}
-" iab AA \mathbf{A}
-" iab BB \mathbf{B}
-" iab CC \mathbf{C}
-" iab UU \mathbf{U}
-" iab II \mathbf{I}
-" iab cc \mathbf{c}
-" iab MM \mathbf{M}
-" iab NN \mathbf{N}
-" iab ff \mathbf{f}
-" iab PP \mathbf{P}
-" iab LL \mathbf{L}
-" iab ee \mathbf{e}
-" iab DD \mathbf{D}
-" iab 11 \mathbf{1}
-" iab 00 \mathbf{0}
-" iab xx \mathbf{x}
-" iab yy \mathbf{y}
-" iab zz \mathbf{z}
-" iab ww \mathbf{w}
-" iab uu \mathbf{u}
-" iab vv \mathbf{v}
-" iab aa \mathbf{a}
-" iab bb \mathbf{b}
-
+function MyTexSetup()
+	iab eitem \begin{itemize}<CR>\item <CR>\end{itemize}<CR><C-O>2k<End>
+	iab eenum \begin{enumerate}<CR>\item <CR>\end{enumerate}<CR><C-O>2k<End>
+	iab equote \begin{itemize}<CR>\item <CR>\end{itemize}<CR><C-O>2k<End>
+	iab xpara \paragraph{}<C-o>h
+    iab eframe \begin{frame}{ }<CR><CR>\end{frame}<C-o>2k<C-o>$<C-o>h
+    iab eblock \begin{block}{ }<CR><CR>\end{block}<C-o>2k<C-o>$<C-o>h
+	iab bf \textbf
+	iab tt \texttt
+	iab it \textit
+endfunc
+autocmd BufEnter *.tex call MyTexSetup()
 
 " easy align
-nmap <C-s> <Plug>(EasyAlign)
-xmap <C-s> <Plug>(EasyAlign)
-let g:easy_align_ignore_groups = ['String']
+"plug: nmap <C-s> <Plug>(EasyAlign)
+"plug: xmap <C-s> <Plug>(EasyAlign)
+"plug: let g:easy_align_ignore_groups = ['String']
 
 " markdown
-let g:vim_markdown_folding_disabled = 1
-let g:tex_conceal = ""
-let g:vim_markdown_math = 1
-let g:vim_markdown_auto_insert_bullets = 0
-let g:vim_markdown_new_list_item_indent = 0
-let g:vim_markdown_toc_autofit = 1
-:autocmd BufReadPost *.md :Toc
-
-" rg
-command R Rg
-set switchbuf+=newtab
+"plug: let g:vim_markdown_folding_disabled = 1
+"plug: let g:tex_conceal = ""
+"plug: let g:vim_markdown_math = 1
+"plug: let g:vim_markdown_auto_insert_bullets = 0
+"plug: let g:vim_markdown_new_list_item_indent = 0
+"plug: let g:vim_markdown_toc_autofit = 1
+"plug: " :autocmd BufReadPost *.md :Toc
 
 " fzf
-nnoremap <silent> <C-p> :FZF<CR>
-
-function! s:GotoOrOpen(command, ...)
-  for file in a:000
-    if a:command == 'e'
-      exec 'e ' . file
-    else
-      exec "tab drop " . file
-    endif
-  endfor
-endfunction
-
-command! -nargs=+ GotoOrOpen call s:GotoOrOpen(<f-args>)
-
-let g:fzf_action = {
-  \ 'ctrl-t': 'GotoOrOpen tab',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
-let g:fzf_buffers_jump = 1
-" If installed using git
-set rtp+=~/.fzf
-
-" vim coq
-"autocmd BufNewFile *.v call SetupCoqIMap()
-"
-"function! SetupCoqIMap()
-"  execute 'inoremap . .<C-o><Enter><CR>'
-"endfunc
+"plug: nnoremap <silent> <C-p> :FZF<CR>
+"plug: 
+"plug: function! s:GotoOrOpen(command, ...)
+"plug:   for file in a:000
+"plug:     if a:command == 'e'
+"plug:       exec 'e ' . file
+"plug:     else
+"plug:       exec "tab drop " . file
+"plug:     endif
+"plug:   endfor
+"plug: endfunction
+"plug: command! -nargs=+ GotoOrOpen call s:GotoOrOpen(<f-args>)
+"plug: 
+"plug: let g:fzf_action = {
+"plug:   \ 'ctrl-t': 'GotoOrOpen tab',
+"plug:   \ 'ctrl-x': 'split',
+"plug:   \ 'ctrl-v': 'vsplit' }
+"plug: let g:fzf_buffers_jump = 1
+"plug: " If installed using git
+"plug: set rtp+=~/.fzf
 
 """ Tagbar ================================
-nmap <F1> :TagbarToggle<CR>
-let g:tagbar_left = 1
+"plug: nmap <F1> :TagbarToggle<CR>
+"plug: let g:tagbar_left = 1
 
 """ Tagline ================================
 set tabline=%!MyTabLine()
@@ -305,3 +276,68 @@ hi TabLine ctermfg=Black ctermbg=Green
 hi TabLineSel ctermfg=Black ctermbg=Red
 hi TabLineFill ctermfg=DarkGreen ctermbg=DarkGreen
 hi TabSep ctermfg=Gray ctermbg=Gray
+
+""" tmux integration ================================
+function! TmuxMove(direction)
+        let wnr = winnr()
+        silent! execute 'wincmd ' . a:direction
+        " If the winnr is still the same after we moved, it is the last pane
+        if wnr == winnr()
+                call system('tmux select-pane -' . tr(a:direction, 'phjkl', 'lLDUR'))
+        end
+endfunction
+
+nnoremap <silent> <c-w>h :call TmuxMove('h')<cr>
+nnoremap <silent> <c-w>j :call TmuxMove('j')<cr>
+nnoremap <silent> <c-w>k :call TmuxMove('k')<cr>
+nnoremap <silent> <c-w>l :call TmuxMove('l')<cr>
+
+""" easymotion ================================
+"plug: let g:EasyMotion_do_mapping = 0 " Disable default mappings
+"plug: let g:EasyMotion_smartcase = 1
+"plug: let g:EasyMotion_prompt = ">"
+"plug: let g:EasyMotion_verbose = 0
+
+""" coqtail: mapping CR space and BS ================================
+"plug: function MapCR()
+"plug:     if &ft == 'coq'
+"plug:         nmap <CR> \cl
+"plug:     else
+"plug:         nmap <CR> <Plug>(easymotion-overwin-line)
+"plug:     endif
+"plug: endfunction
+"plug: autocmd BufEnter * call MapCR()
+"plug: 
+"plug: function MapSpace()
+"plug:     if &ft == 'coq'
+"plug:         nmap <Space> \cj
+"plug:     else
+"plug:         nmap <Space> <Plug>(easymotion-overwin-f)
+"plug:     endif
+"plug: endfunction
+"plug: autocmd BufEnter * call MapSpace()
+"plug: 
+"plug: function MapBS()
+"plug:     if &ft == 'coq'
+"plug:         nmap <BS> \ck
+"plug:     endif
+"plug: endfunction
+"plug: autocmd BufEnter * call MapBS()
+
+""" per-window search pattern & marking ================================
+"let s:searches={}
+"let s:matches={}
+"hi MyMark term=reverse ctermfg=0 ctermbg=6 guifg=Black guibg=Cyan
+"au WinLeave * call s:Mark(@/)
+"au WinNew   * let idx=tabpagenr()*100+winnr() |
+"            \ let s:searches[idx]=""
+"au WinEnter * call clearmatches() |
+"	    \ let idx=tabpagenr()*100+winnr() |
+"            \ let @/=s:searches[idx] |
+"	    \ call feedkeys('\<BS>n')
+"function! s:Mark(ptn)
+"	call clearmatches()
+"	let idx=tabpagenr()*100+winnr()
+"	let s:searches[idx]=a:ptn
+"        call matchadd('MyMark', s:searches[idx], 11)
+"endfunction
